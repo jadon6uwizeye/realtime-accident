@@ -13,7 +13,7 @@ class DatabaseService {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('app.db');
+    _database = await _initDB('app3.db');
     return _database!;
   }
 
@@ -28,9 +28,9 @@ class DatabaseService {
       CREATE TABLE users (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        plateNumber TEXT NOT NULL,
-        carModel TEXT NOT NULL,
-        phoneNumber INTEGER NOT NULL,
+        plate_number TEXT NOT NULL,
+        car_model TEXT NOT NULL,
+        phone_number INTEGER NOT NULL,
         email TEXT NOT NULL,
         password TEXT NOT NULL
       )

@@ -139,8 +139,10 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             SizedBox(height: 20),
             Text(
-              "Welcome, ${widget.user.name}"
-              "\nUser ID: ${widget.user.id}",
+              "\nPlate Number: ${widget.user.plateNumber}"
+              "\nCar Owner: ${widget.user.name}"
+              "\nPhone Number: 0${widget.user.phoneNumber}"
+              "\nCar Model: ${widget.user.carModel}",
               style: TextStyle(fontSize: 18, color: Colors.grey[700]),
               textAlign: TextAlign.center,
             ),
