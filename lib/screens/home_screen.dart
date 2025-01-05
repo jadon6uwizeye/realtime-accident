@@ -4,6 +4,9 @@ import 'package:shake/shake.dart';
 import '../models/accident.dart';
 import '../models/user.dart';
 import '../services/db_service.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   final User user;
@@ -72,9 +75,61 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // send accident message to a phone number
+  Future<void> _sendAccidentMessage(
+      // get the phone number and all the details
+      plateNumber,
+      phoneNumber,
+      carModel,
+      latitude,
+      longitude,
+      insurance,
+      timestamp,
+      CarOwner) async {
+    print('Sending accident message');
+    var url = Uri.parse('https://api.pindo.io/v1/sms/');
+    var token = dotenv.env['PINDO_API_KEY'];
+    var headers = {
+      'Accept': '*/*',
+      'Authorization': 'Bearer $token',
+    };
+    final body = {
+      'to': '+250788318666',
+      'text':
+          'Hello from Real time accident and support system, an accident has occurred at location: ($latitude, $longitude) at $timestamp. The car involved has plate number $plateNumber, model $carModel and is registered to $CarOwner with $insurance insurance.',
+      'sender': 'PindoTest'
+    };
+    // send the request
+    final response = await http.post(url, headers: headers, body: body);
+    print(response.body);
+    if (response.statusCode == 200) {
+      print('Message sent successfully');
+    } else {
+      print('Failed to send message');
+    }
+  }
+
   Future<void> _logAccident() async {
     Position? locationData = await _getCurrentLocation();
+    // _sendAccidentMessage(
+    //     widget.user.plateNumber,
+    //     widget.user.phoneNumber,
+    //     widget.user.carModel,
+    //     locationData!.latitude,
+    //     locationData.longitude,
+    //     widget.user.insurance,
+    //     DateTime.now()
+    //         .toIso8601String()
+    //         .trim()
+    //         .substring(0, 19)
+    //         .replaceAll('T', ' '),
+    //     widget.user.name);
+    
     if (locationData == null) return;
+    // print type of locationData.latitude
+    print(locationData.latitude.runtimeType);
+    print(locationData.longitude.runtimeType);
+    
     final accident = Accident(
       userId: widget.user.id!,
       latitude: locationData.latitude,
@@ -91,7 +146,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _showAccidentConfirmationModal() {
+  Future<void> _showAccidentConfirmationModal() async {
+        final player = AudioPlayer();
+    await player.play(
+      AssetSource(
+        'alert.mp3',
+      ),
+      volume: 100,
+    );
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -199,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-              child: Text("Log Accident", style: TextStyle(fontSize: 18)),
+              child: Text("Accident detected", style: TextStyle(fontSize: 18)),
             ),
             SizedBox(height: 20),
           ],

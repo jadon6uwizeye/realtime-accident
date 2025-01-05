@@ -7,8 +7,13 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController plateNumberController = TextEditingController();
   final TextEditingController carModelController = TextEditingController();
+  final TextEditingController insurance = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  final List<String> insuranceOptions = ['Sanlam/Allianz', 'Prime', 'RSSB', 'Sonarwa'];
+
+  String? selectedInsurance;
 
   void _registerUser(BuildContext context) async {
     final user = User(
@@ -16,6 +21,7 @@ class SignupScreen extends StatelessWidget {
       email: emailController.text,
       plateNumber: plateNumberController.text,
       carModel: carModelController.text,
+      insurance: selectedInsurance ?? '',
       phoneNumber: int.parse(phoneNumberController.text),
       password: passwordController.text,
     );
@@ -34,6 +40,7 @@ class SignupScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                SizedBox(height: 5),
                 Text(
                   "Welcome to Realtime Accident Aid and Support System",
                   textAlign: TextAlign.center,
@@ -49,18 +56,20 @@ class SignupScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 10),
                 _buildTextField(nameController, "Car Owner"),
-                SizedBox(height: 16),
+                SizedBox(height: 14),
                 _buildTextField(emailController, "Email"),
-                SizedBox(height: 16),
+                SizedBox(height: 14),
                 _buildTextField(passwordController, "Password", isPassword: true),
-                SizedBox(height: 16),
+                SizedBox(height: 14),
                 _buildTextField(phoneNumberController, "Phone Number"),
-                SizedBox(height: 16),
+                SizedBox(height: 14),
                 _buildTextField(plateNumberController, "Plate Number"),
-                SizedBox(height: 16),
+                SizedBox(height: 14),
                 _buildTextField(carModelController, "Car Model"),
+                SizedBox(height: 16),
+                _buildDropdown(),
                 SizedBox(height: 30),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -73,7 +82,7 @@ class SignupScreen extends StatelessWidget {
                   onPressed: () => _registerUser(context),
                   child: Text("Sign Up", style: TextStyle(fontSize: 20, color: Colors.white)),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 14),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/login');
@@ -107,6 +116,32 @@ class SignupScreen extends StatelessWidget {
         contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       ),
       obscureText: isPassword,
+    );
+  }
+
+  Widget _buildDropdown() {
+    return DropdownButtonFormField<String>(
+      value: selectedInsurance,
+      decoration: InputDecoration(
+        labelText: "Insurance",
+        filled: true,
+        fillColor: Colors.blue[10],
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30.0),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      ),
+      hint: Text("Select Insurance"),
+      items: insuranceOptions.map((String insurance) {
+        return DropdownMenuItem<String>(
+          value: insurance,
+          child: Text(insurance),
+        );
+      }).toList(),
+      onChanged: (String? value) {
+        selectedInsurance = value;
+      },
     );
   }
 }

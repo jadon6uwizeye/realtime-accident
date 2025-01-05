@@ -11,6 +11,11 @@ class LoginScreen extends StatelessWidget {
     final password = passwordController.text;
 
     final user = await DatabaseService.instance.getUserByEmail(email);
+    // final accidents = await DatabaseService.instance.getAccidents(user?.id);
+    // print(accidents);
+    print(user);
+    print(user?.isAdmin);
+    print(user?.id);
     if (user != null && user.password == password) {
       Navigator.pushReplacementNamed(context, '/home', arguments: user);
     } else {

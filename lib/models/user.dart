@@ -3,18 +3,23 @@ class User {
   final String name;
   final String plateNumber;
   final String carModel;
-  final int phoneNumber; 
+  final int phoneNumber;
   final String email;
   final String password;
+  final bool isAdmin;
+  final String insurance;
 
   User(
       {this.id,
       required this.name,
       required this.plateNumber,
       required this.carModel,
+      required this.insurance,
       required this.phoneNumber,
       required this.email,
-      required this.password});
+      required this.password,
+      this.isAdmin = false
+      });
 
   // Convert a User object to a map to store in the database
   Map<String, dynamic> toMap() {
@@ -23,8 +28,10 @@ class User {
       'name': name,
       'plate_number': plateNumber,
       'car_model': carModel,
+      'insurance': insurance,
       'phone_number': phoneNumber,
       'email': email,
+      'is_admin': isAdmin ? 1 : 0,
       'password': password,
     };
   }
@@ -36,8 +43,10 @@ class User {
       name: map['name'],
       plateNumber: map['plate_number'],
       carModel: map['car_model'],
+      insurance: map['insurance'],
       phoneNumber: map['phone_number'],
       email: map['email'],
+      isAdmin: map['is_admin'] == 1,
       password: map['password'],
     );
   }

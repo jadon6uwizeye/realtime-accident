@@ -26,8 +26,9 @@ class Accident {
     return Accident(
       id: map['id'],
       userId: map['userId'],
-      latitude: map['latitude'],
-      longitude: map['longitude'],
+      // latitude: map['latitude'] comverted to double
+      latitude: double.parse(map['latitude']),
+      longitude: double.parse(map['longitude']),
       timestamp: map['timestamp'],
     );
   }
