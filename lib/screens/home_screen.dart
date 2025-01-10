@@ -111,19 +111,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _logAccident() async {
     Position? locationData = await _getCurrentLocation();
-    // _sendAccidentMessage(
-    //     widget.user.plateNumber,
-    //     widget.user.phoneNumber,
-    //     widget.user.carModel,
-    //     locationData!.latitude,
-    //     locationData.longitude,
-    //     widget.user.insurance,
-    //     DateTime.now()
-    //         .toIso8601String()
-    //         .trim()
-    //         .substring(0, 19)
-    //         .replaceAll('T', ' '),
-    //     widget.user.name);
+    _sendAccidentMessage(
+        widget.user.plateNumber,
+        widget.user.phoneNumber,
+        widget.user.carModel,
+        locationData!.latitude,
+        locationData.longitude,
+        widget.user.insurance,
+        DateTime.now()
+            .toIso8601String()
+            .trim()
+            .substring(0, 19)
+            .replaceAll('T', ' '),
+        widget.user.name);
     
     if (locationData == null) return;
     // print type of locationData.latitude
