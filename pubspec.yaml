@@ -44,6 +44,8 @@ dependencies:
   shake: ^2.0.2
   audioplayers: ^6.1.0
   flutter_dotenv: ^5.2.1
+  pdf: ^3.6.0
+  printing: ^5.0.0
 
 dev_dependencies:
   flutter_test:

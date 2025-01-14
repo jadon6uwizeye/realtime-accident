@@ -1,7 +1,13 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:realtime_accident/models/accident.dart';
 import 'package:realtime_accident/models/user.dart';
 import 'package:realtime_accident/services/db_service.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -35,6 +41,51 @@ class _AdminDashboardState extends State<AdminDashboard> {
     return combinedData;
   }
 
+  Future<void> _generatePdf() async {
+    final pdf = pw.Document();
+
+    // Fetching data to display
+    List<Map<String, dynamic>> data = await _dashboardData;
+
+    pdf.addPage(pw.Page(build: (pw.Context context) {
+      return pw.Column(
+        children: data.map((record) {
+          final accident = record['accident'] as Accident;
+          final user = record['user'] as User?;
+
+          return pw.Padding(
+            padding: const pw.EdgeInsets.symmetric(vertical: 8.0),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text("Location: (${accident.latitude.toStringAsFixed(4)}, ${accident.longitude.toStringAsFixed(4)})"),
+                pw.Text("Time: ${accident.timestamp}"),
+                user != null
+                    ? pw.Column(
+                        children: [
+                          pw.Text("User Information:"),
+                          pw.Text("Name: ${user.name}"),
+                          pw.Text("Email: ${user.email}"),
+                          pw.Text("Phone: ${user.phoneNumber ?? 'N/A'}"),
+                          pw.Text("Plate number: ${user.plateNumber ?? 'N/A'}"),
+                        ],
+                      )
+                    : pw.Text("No user information available."),
+                pw.Divider(),
+              ],
+            ),
+          );
+        }).toList(),
+      );
+    }));
+
+    // Save PDF to file or print
+    final output = await getExternalStorageDirectory();
+    final file = File("${output!.path}/accident_report.pdf");
+    await file.writeAsBytes(await pdf.save());
+    Printing.layoutPdf(onLayout: (format) => pdf.save());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +110,14 @@ class _AdminDashboardState extends State<AdminDashboard> {
             ),
           ),
           const Divider(height: 1, thickness: 1, color: Colors.blueGrey),
+          // Button to generate PDF report
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: _generatePdf,
+              child: const Text("Download Accident Report as PDF"),
+            ),
+          ),
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: _dashboardData,

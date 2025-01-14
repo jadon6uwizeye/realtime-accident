@@ -13,7 +13,7 @@ class DatabaseService {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('app5.db');
+    _database = await _initDB('app6.db');
     return _database!;
   }
 
@@ -41,6 +41,14 @@ class DatabaseService {
     // create admin user
     await db.execute(
         '''INSERT INTO users (name, plate_number, car_model, insurance, phone_number, email, is_admin, password) VALUES ('Admin', 'RAC001', 'Toyota', 'RSSB', 788318666, 'admin@police.rw', 1, 'admin@123')''');
+
+    // add hospital user
+    await db.execute(
+        '''INSERT INTO users (name, plate_number, car_model, insurance, phone_number, email, is_admin, password) VALUES ('Hospital', 'RAC002', 'Toyota', 'RSSB', 788318666, 'admin@hospital.rw', 1, 'admin@123')''');
+
+    // add insurance user
+    await db.execute(
+        '''INSERT INTO users (name, plate_number, car_model, insurance, phone_number, email, is_admin, password) VALUES ('Insurance', 'RAC003', 'Toyota', 'RSSB', 788318666, 'admin@insurance.rw', 1, 'admin@123')''');
 
     await db.execute('''
       CREATE TABLE accidents (
